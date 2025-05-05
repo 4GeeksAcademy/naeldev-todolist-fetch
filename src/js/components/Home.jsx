@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Body from "./toDo";
 
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
+
 
 //create your first component
 const Home = () => {
@@ -10,24 +9,15 @@ const Home = () => {
 	const [tasks, setTask] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
-	const username = "nael-dev"
-
-	let count = tasks.length;
-
-
+	const username = "nael-dev";
 
 	useEffect(() => {
 		const fetchTasks = async () => {
 			setLoading(true);
-			try { // preguntar como controlar que si existe no de fallo, controlar el error vamos
-				await fetch(`https://playground.4geeks.com/todo/users/${username}`, {
-					method: "POST",
-					headers: { "Content-Type": "application/json" }
-				});
-
-				const response = await fetch(`https://playground.4geeks.com/todo/todos/${username}`);
+			try { 
+				const response = await fetch(`https://playground.4geeks.com/todo/users/${username}`);
 				const data = await response.json();
-				setTask(data);
+				setTask(data.todos);
 			} catch (err) {
 				setError("Error al cargar tareas");
 				console.error(err);
@@ -62,7 +52,7 @@ const Home = () => {
 		} catch (error) {
 			console.error("Error adding task:", error);
 		}
-		console.log(tasks)
+		
 		setLoading(false)
 	}
 
@@ -86,62 +76,59 @@ const Home = () => {
 	if (error) return <div className="text-danger">{error}</div>;
 
 
-
-
-
-
-
-
-return (	
-	<>
-		<div className=" text-center container-fluid m-5 p-2">
-			<div className=" d-flex justify-content-center ">
-				<h1 className="center">To DoS...</h1>
+	return (
+		<>
+			<div className=" text-center container-fluid m-5 p-2">
+			<h1>Bienvenido a la lista de tareas del usuario : {username}</h1>
+				<div className=" d-flex justify-content-center ">
+				
+					<h1 className="center">To DoS...</h1>
+				</div>
 			</div>
-		</div>
-		<div className="post-it">
-			<Body
-				handleChange={handleChange}
-				value={inputValue}
-				addTask={addTask}
-			/>
-			<div className="mt-3 text-center">
-				{tasks.map((task) => (
+			<div className="post-it">
+				<Body
+					handleChange={handleChange}
+					value={inputValue}
+					addTask={addTask}
+				/>
+				<div className="mt-3 text-center">
+					{tasks.map((task) => (
 
-					<div key={task.id} className="text-center p-2 d-flex align-items-center">
-						<input
-							className="form-check-input me-2"
-							type="checkbox"
-							
-						/>
-						<span className="flex-grow-1 text-center">
-							{task.name}
-						</span>
-						<button
-							onClick={() => deleteTask(task.id)}
-							type="button"
-							className="btn boton">
-							x
-						</button>
-					</div>
+						<div key={task.id} className="text-center p-2 d-flex align-items-center">
+							<input
+								className="form-check-input me-2"
+								type="checkbox"
+								
 
-				))}
+							/>
+							<span className="flex-grow-1 text-center">
+								{task.label}
+							</span>
+							<button
+								onClick={() => deleteTask(task.id)}
+								type="button"
+								className="btn boton">
+								x
+							</button>
+						</div>
+
+					))}
 
 
 
+				</div>
+				<div>
+					{tasks.length === 0 ? "No hay tareas pendientes" :
+						`${tasks.length} tarea${tasks.length !== 1 ? 's' : ''} en la lista`}
+
+
+				</div>
 			</div>
-			<div>
-				{tasks.length === 0 ? "No hay tareas pendientes" :
-					`${tasks.length} tarea${tasks.length !== 1 ? 's' : ''} en la lista`}
-
-
-			</div>
-		</div>
 
 
 
 
-	</>
+		</>
 	);
 
 
