@@ -25,3 +25,6 @@ const Body = ({handleChange, inputValue,addTask}) => {
 }
 
 export default Body
+
+
+

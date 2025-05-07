@@ -9,15 +9,51 @@ const Home = () => {
 	const [tasks, setTask] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const [user, setUser] = useState(null)
 	const username = "nael-dev";
 
 	useEffect(() => {
-		const fetchTasks = async () => {
+		const fetchTasksandCreateUser = async () => {
 			setLoading(true);
-			try { 
+			try {
+
+				const existUser = await fetch("https://playground.4geeks.com/todo/users?offset=0&limit=100");
+
+				if (!existUser.ok) {
+					throw new Error(`HTTP error! status: ${existUser.status}`);
+				}
+				const users = await existUser.json();
+				console.log("Respuesta de users:", users.users);
+
+
+				const filterUser = users.users.filter(user => user.name === username);
+				console.log(filterUser)
+
+				if (filterUser.length > 0) {
+					setUser(filterUser[0].name);
+				} else {
+
+					const createUser = await fetch(`https://playground.4geeks.com/todo/users/${username}`, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify([])
+					});
+					if (!createUser.ok){
+
+					 throw new Error('Error creating user');}
+				
+				
+				
+				setUser(username);
+	
+				}
+				// preguntar si el fallo puede ser que una vez se crea el usuario, empieza a cargar las tareas y quizas el post no ha sido actualizado?
+				
+				//si todo falla,esto hay que dejarlo(cargar las tareas una vez ya se ha creado el usuario.)
 				const response = await fetch(`https://playground.4geeks.com/todo/users/${username}`);
 				const data = await response.json();
 				setTask(data.todos);
+
 			} catch (err) {
 				setError("Error al cargar tareas");
 				console.error(err);
@@ -26,7 +62,7 @@ const Home = () => {
 
 		};
 
-		fetchTasks();
+		fetchTasksandCreateUser();
 	}, [username]);
 
 
@@ -79,7 +115,7 @@ const Home = () => {
 	return (
 		<>
 			<div className=" text-center container-fluid m-5 p-2">
-			<h1>Bienvenido a la lista de tareas del usuario : {username}</h1>
+			<h1>Bienvenido a la lista de tareas del usuario : {user}</h1>
 				<div className=" d-flex justify-content-center ">
 				
 					<h1 className="center">To DoS...</h1>
