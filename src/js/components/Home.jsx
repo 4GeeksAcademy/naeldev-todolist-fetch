@@ -26,11 +26,11 @@ const Home = () => {
 				console.log("Respuesta de users:", users.users);
 
 
-				const filterUser = users.users.filter(user => user.name === username);
+				const filterUser = users.users.find(user => user.name === username);
 				console.log(filterUser)
 
-				if (filterUser.length > 0) {
-					setUser(filterUser[0].name);
+				if (filterUser) {
+					setUser(filterUser.name);
 				} else {
 
 					const createUser = await fetch(`https://playground.4geeks.com/todo/users/${username}`, {
@@ -38,17 +38,17 @@ const Home = () => {
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify([])
 					});
-					if (!createUser.ok){
+					if (!createUser.ok) {
 
-					 throw new Error('Error creating user');}
-				
-				
-				
-				setUser(username);
-	
+						throw new Error('Error creating user');
+					}
+
+
+					setUser(username);
+
 				}
 				// preguntar si el fallo puede ser que una vez se crea el usuario, empieza a cargar las tareas y quizas el post no ha sido actualizado?
-				
+
 				//si todo falla,esto hay que dejarlo(cargar las tareas una vez ya se ha creado el usuario.)
 				const response = await fetch(`https://playground.4geeks.com/todo/users/${username}`);
 				const data = await response.json();
@@ -88,7 +88,7 @@ const Home = () => {
 		} catch (error) {
 			console.error("Error adding task:", error);
 		}
-		
+
 		setLoading(false)
 	}
 
@@ -115,9 +115,9 @@ const Home = () => {
 	return (
 		<>
 			<div className=" text-center container-fluid m-5 p-2">
-			<h1>Bienvenido a la lista de tareas del usuario : {user}</h1>
+				<h1>Bienvenido a la lista de tareas del usuario : {user}</h1>
 				<div className=" d-flex justify-content-center ">
-				
+
 					<h1 className="center">To DoS...</h1>
 				</div>
 			</div>
@@ -134,7 +134,7 @@ const Home = () => {
 							<input
 								className="form-check-input me-2"
 								type="checkbox"
-								
+
 
 							/>
 							<span className="flex-grow-1 text-center">
