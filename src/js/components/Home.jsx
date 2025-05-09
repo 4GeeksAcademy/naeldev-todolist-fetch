@@ -10,7 +10,7 @@ const Home = () => {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [user, setUser] = useState(null)
-	const username = "nael-dev";
+	const userName = "nael-dev";
 
 	useEffect(() => {
 		const fetchTasksandCreateUser = async () => {
@@ -18,25 +18,22 @@ const Home = () => {
 			try {
 
 				const existUser = await fetch("https://playground.4geeks.com/todo/users?offset=0&limit=100");
-
+					
 				if (!existUser.ok) {
 					throw new Error(`HTTP error! status: ${existUser.status}`);
 				}
 				const users = await existUser.json();
-				console.log("Respuesta de users:", users.users);
-
-
-				const filterUser = users.users.find(user => user.name === username);
-				console.log(filterUser)
+				
+				const filterUser = users.users.find(user => user.name === userName);
+			
 
 				if (filterUser) {
 					setUser(filterUser.name);
 				} else {
 
-					const createUser = await fetch(`https://playground.4geeks.com/todo/users/${username}`, {
+					const createUser = await fetch(`https://playground.4geeks.com/todo/users/${userName}`, {
 						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify([])
+						headers: { 'Content-Type': 'application/json' }
 					});
 					if (!createUser.ok) {
 
@@ -44,13 +41,13 @@ const Home = () => {
 					}
 
 
-					setUser(username);
+					setUser(userName);
 
 				}
-				// preguntar si el fallo puede ser que una vez se crea el usuario, empieza a cargar las tareas y quizas el post no ha sido actualizado?
+				
 
 				//si todo falla,esto hay que dejarlo(cargar las tareas una vez ya se ha creado el usuario.)
-				const response = await fetch(`https://playground.4geeks.com/todo/users/${username}`);
+				const response = await fetch(`https://playground.4geeks.com/todo/users/${userName}`);
 				const data = await response.json();
 				setTask(data.todos);
 
@@ -63,7 +60,7 @@ const Home = () => {
 		};
 
 		fetchTasksandCreateUser();
-	}, [username]);
+	}, []);
 
 
 	const handleChange = (e) => {
@@ -77,7 +74,7 @@ const Home = () => {
 
 		try {
 			setLoading(true);
-			const response = await fetch(`https://playground.4geeks.com/todo/todos/${username}`, {
+			const response = await fetch(`https://playground.4geeks.com/todo/todos/${userName}`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ label: inputValue })
